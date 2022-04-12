@@ -1,3 +1,4 @@
+'use strict';
 window.addEventListener('DOMContentLoaded', () => {
 	//Tabs
 	const tabs = document.querySelectorAll('.tabheader__item');
@@ -255,10 +256,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 			form.insertAdjaentElement('afterend', statusMassage);
 
-			const request = new XMLHttpRequest();
-			request.open('Post', 'server.php');
-
-			request.setRequestHeader('Content-type', 'application/JSON');
 			const formData = new FormData(form);
 
 			const object = {};
@@ -266,20 +263,24 @@ window.addEventListener('DOMContentLoaded', () => {
 				object[key] = value;
 			});
 
-			const json = JSON.stringify(object);
-
-			request.send(json);
-
-			request.addEventListener('load', () => {
-				if (request.status === 200) {
-					console.log(request.response);
+			fetch('server.php', {
+				method: 'POST',
+				headers: { 'Content-type': 'application/JSON' },
+				body: JSON.stringify(object),
+			})
+				.then(data => data.text())
+				.then(data => {
+					console.log(data);
 					showThanksModal(message.succes);
 					form.reset();
 					statusMassage.remove();
-				} else {
+				})
+				.catch(() => {
 					showThanksModal(message.failure);
-				}
-			});
+				})
+				.finally(() => {
+					form.reset();
+				});
 		});
 	}
 
