@@ -50,4 +50,4 @@ function timer() {
 
 	setClock('.timer', deadLine); // передает информацию в родительский класс и фукнцию в которую она идет
 }
-module.exports = timer;
+export default timer;
